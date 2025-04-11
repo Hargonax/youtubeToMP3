@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Service
 public class MP3MetadataManagerImpl implements MP3MetadataManager {
     private final Logger logger = LogManager.getLogger(MP3MetadataManagerImpl.class);
@@ -29,8 +34,8 @@ public class MP3MetadataManagerImpl implements MP3MetadataManager {
      */
     public void updateMP3Metadata(final Song song) {
         try {
-            if (!StringUtils.isEmpty(song.getFilePath())) {
-                final String message = "We couldn't update MP3 " + song.getName() + " metadata because there is no path indicated for the song.";
+            if (StringUtils.isEmpty(song.getFilePath())) {
+                final String message = "We couldn't update MP3 " + song.getTitle() + " metadata because there is no path indicated for the song.";
                 logger.warn(message);
                 resultManager.addMessage(message);
             } else {
@@ -43,7 +48,7 @@ public class MP3MetadataManagerImpl implements MP3MetadataManager {
                     id3v1Tag = new ID3v1Tag();
                     mp3file.setId3v1Tag(id3v1Tag);
                 }
-                id3v1Tag.setTitle(song.getName());
+                id3v1Tag.setTitle(song.getTitle());
                 if (!StringUtils.isEmpty(song.getArtist())) {
                     id3v1Tag.setArtist(song.getArtist());
                 }
@@ -53,10 +58,14 @@ public class MP3MetadataManagerImpl implements MP3MetadataManager {
                 if (!StringUtils.isEmpty(song.getYear())) {
                     id3v1Tag.setYear(song.getYear());
                 }
-                mp3file.save(song.getFilePath());
+                final String auxFilePath = song.getFilePath() + "mp3agic";
+                mp3file.save(auxFilePath);
+                new File(song.getFilePath()).delete();
+                Path source = Paths.get(auxFilePath);
+                Files.move(source, source.resolveSibling(song.getArtist() + " - " + song.getTitle() + ".mp3"));
             }
         } catch (Exception ex) {
-            final String message = "Error updating " + song.getName() + ". " + ex.getMessage();
+            final String message = "Error updating " + song.getTitle() + ". " + ex.getMessage();
             logger.error(message);
             resultManager.addMessage(message);
         }

@@ -4,8 +4,6 @@ import es.bifacia.ytmp3.service.YoutubeToMP3Downloader;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 @Service
 public class YoutubeToMP3DownloaderImpl implements YoutubeToMP3Downloader {
@@ -17,8 +15,6 @@ public class YoutubeToMP3DownloaderImpl implements YoutubeToMP3Downloader {
      * @param outputFile Path where we are downloading the MP3 transformed file.
      */
     public void downloadYoutubeVideoAsMP3(final String youtubeURL, final String outputFile) {
-        String outputTemplate = "output/%(title)s.%(ext)s"; // Guarda en carpeta 'output/'
-
         final ProcessBuilder processBuilder = new ProcessBuilder(
                 YT_DLP_PATH,
                 "-x",                         // extracts audio

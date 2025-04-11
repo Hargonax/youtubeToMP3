@@ -4,7 +4,7 @@ import es.bifacia.ytmp3.service.ExecutionResultManager;
 import org.springframework.stereotype.Service;
 
 @Service
-public abstract class ExecutionResultManagerImpl implements ExecutionResultManager {
+public class ExecutionResultManagerImpl implements ExecutionResultManager {
     private final StringBuilder sb = new StringBuilder();
 
     public ExecutionResultManagerImpl() {
@@ -18,6 +18,5 @@ public abstract class ExecutionResultManagerImpl implements ExecutionResultManag
     public void addMessage(final String message) {
         sb.append(message).append("\n");
     }
-
 
 }

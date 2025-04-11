@@ -9,3 +9,14 @@ For downloading the Youtube video and convert it to MP3 we need two tools:
     
 You need to install yt-dlp and ffmpeg in your system (you can use pip install yt-dlp and make sure to have ffmpeg in you PATH).
 An executable version of ffmpeg for MacOs is included in the utils folder.
+
+We also use mp3agic library. Documentation can be found in https://github.com/mpatric/mp3agic.
+
+
+
+# MacOs installation tips
+If you wish to install a Python application that isn't in Homebrew,
+it may be easiest to use 'pipx install xyz', which will manage a
+virtual environment for you. You can install pipx with
+    
+brew install pipx
