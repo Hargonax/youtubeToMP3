@@ -1,6 +1,7 @@
 package es.bifacia.ytmp3.utils;
 
 import java.io.File;
+import java.io.PrintWriter;
 
 public abstract class FileUtils {
 
@@ -16,5 +17,17 @@ public abstract class FileUtils {
     public static boolean fileExists(final String filePath) {
         final File file = new File(filePath);
         return file.exists();
+    }
+
+    /**
+     * Creates a file from a String content.
+     * @param content Content to save in the file.
+     * @param outputFilePath Path for the file.
+     * @throws Exception
+     */
+    public static void stringToFile(final String content, final String outputFilePath) throws Exception {
+        try (final PrintWriter out = new PrintWriter(outputFilePath)) {
+            out.println(content);
+        }
     }
 }

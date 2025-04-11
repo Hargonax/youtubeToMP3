@@ -38,3 +38,4 @@ build/
 .gitattributes
 mvnw
 mvnw.cmd
+result.txt

@@ -8,4 +8,10 @@ public interface ExecutionResultManager {
      */
     void addMessage(final String message);
 
+    /**
+     * Creates the file with all the message obtained during the execution of the application.
+     * @throws Exception
+     */
+    void createExecutionResultFile() throws Exception;
+
 }

@@ -7,6 +7,7 @@ import es.bifacia.ytmp3.service.MainService;
 import es.bifacia.ytmp3.service.YoutubeToMP3Downloader;
 import es.bifacia.ytmp3.service.excel.ExcelService;
 import es.bifacia.ytmp3.utils.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,17 +39,26 @@ public class MainServiceImpl implements MainService {
      * @throws Exception
      */
     public void runApplication() throws Exception {
-        final List<Song> songs = excelService.getSongs();
-        if (songs == null || songs.isEmpty()) {
-            final String message = "No songs were retrieved from the Excel page.";
-            resultManager.addMessage(message);
-        }
-        songs.forEach(s -> {
-            if (!FileUtils.fileExists(s.getFilePath())) {
-                mp3Downloader.downloadYoutubeVideoAsMP3(s.getYoutubeURL(), s.getFilePath());
+        try {
+            final List<Song> songs = excelService.getSongs();
+            if (songs == null || songs.isEmpty()) {
+                final String message = "No songs were retrieved from the Excel page.";
+                resultManager.addMessage(message);
             }
-            metadataManager.updateMP3Metadata(s);
-        });
+            songs.forEach(s -> {
+                if (!FileUtils.fileExists(s.getFilePath())) {
+                    if (!StringUtils.isEmpty(s.getYoutubeURL())) {
+                        mp3Downloader.downloadYoutubeVideoAsMP3(s.getYoutubeURL(), s.getFilePath());
+                    } else {
+                        final String message = "No Youtube URL for song " + s.getTitle() + ".";
+                        resultManager.addMessage(message);
+                    }
+                }
+                metadataManager.updateMP3Metadata(s);
+            });
+        } finally {
+            resultManager.createExecutionResultFile();
+        }
     }
 
 }
