@@ -8,6 +8,8 @@ public class Song {
     private String album;
     private String youtubeURL;
     private String filePath;
+    private String startOfSong;
+    private String endOfSong;
 
     public Song() {
         super();
@@ -67,5 +69,21 @@ public class Song {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getStartOfSong() {
+        return startOfSong;
+    }
+
+    public void setStartOfSong(String startOfSong) {
+        this.startOfSong = startOfSong;
+    }
+
+    public String getEndOfSong() {
+        return endOfSong;
+    }
+
+    public void setEndOfSong(String endOfSong) {
+        this.endOfSong = endOfSong;
     }
 }

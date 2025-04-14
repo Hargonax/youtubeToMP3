@@ -1,14 +1,25 @@
 package es.bifacia.ytmp3.service.impl;
 
+import es.bifacia.ytmp3.service.ExecutionResultManager;
 import es.bifacia.ytmp3.service.YoutubeToMP3Downloader;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Files;
 
 @Service
 public class YoutubeToMP3DownloaderImpl implements YoutubeToMP3Downloader {
-    private static final String YT_DLP_PATH = "/Users/alejandro.calle/.local/pipx/venvs/yt-dlp/bin/yt-dlp";
+    private final Logger logger = LogManager.getLogger(YoutubeToMP3DownloaderImpl.class);
+
+    @Value("${yt.dlp.path}")
+    private String ytDlpPath;
+
+    @Autowired
+    private ExecutionResultManager resultManager;
 
     /**
      * Transforms a Youtube video to MP3 and downloads it to the indicated folder.
@@ -17,10 +28,10 @@ public class YoutubeToMP3DownloaderImpl implements YoutubeToMP3Downloader {
      */
     public void downloadYoutubeVideoAsMP3(final String youtubeURL, final String outputFile) {
         final ProcessBuilder processBuilder = new ProcessBuilder(
-                YT_DLP_PATH,
+                ytDlpPath,
                 "-x",                         // extracts audio
-                "--audio-format", "mp3",     // converts it to mp3
-                "-o", outputFile,        // name of the file
+                "--audio-format", "mp3",      // converts it to mp3
+                "-o", outputFile,            // name of the file
                 youtubeURL
         );
         try {
@@ -35,8 +46,10 @@ public class YoutubeToMP3DownloaderImpl implements YoutubeToMP3Downloader {
             }
             int exitCode = process.waitFor();
             System.out.println("Proceso terminado con código: " + exitCode);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            final String message = "Error trying to download song " + youtubeURL + ". " + ex.getMessage();
+            resultManager.addMessage(message);
+            logger.error(message);
         }
     }
 }

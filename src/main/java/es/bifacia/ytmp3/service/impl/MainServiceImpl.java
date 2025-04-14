@@ -1,10 +1,7 @@
 package es.bifacia.ytmp3.service.impl;
 
 import es.bifacia.ytmp3.model.Song;
-import es.bifacia.ytmp3.service.ExecutionResultManager;
-import es.bifacia.ytmp3.service.MP3MetadataManager;
-import es.bifacia.ytmp3.service.MainService;
-import es.bifacia.ytmp3.service.YoutubeToMP3Downloader;
+import es.bifacia.ytmp3.service.*;
 import es.bifacia.ytmp3.service.excel.ExcelService;
 import es.bifacia.ytmp3.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +12,9 @@ import java.util.List;
 
 @Service
 public class MainServiceImpl implements MainService {
+
+    @Autowired
+    private MP3Manager mp3Manager;
 
     @Autowired
     private ExcelService excelService;
@@ -49,6 +49,9 @@ public class MainServiceImpl implements MainService {
                 if (!FileUtils.fileExists(s.getFilePath())) {
                     if (!StringUtils.isEmpty(s.getYoutubeURL())) {
                         mp3Downloader.downloadYoutubeVideoAsMP3(s.getYoutubeURL(), s.getFilePath());
+                        if (!StringUtils.isEmpty(s.getEndOfSong())) {
+                            mp3Manager.trimSong(s.getFilePath(), s.getStartOfSong(), s.getEndOfSong());
+                        }
                     } else {
                         final String message = "No Youtube URL for song " + s.getTitle() + ".";
                         resultManager.addMessage(message);

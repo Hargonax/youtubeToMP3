@@ -1,8 +1,6 @@
 package es.bifacia.ytmp3.service.impl;
 
-import com.mpatric.mp3agic.ID3v1;
-import com.mpatric.mp3agic.ID3v1Tag;
-import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.*;
 import es.bifacia.ytmp3.model.Song;
 import es.bifacia.ytmp3.service.ExecutionResultManager;
 import es.bifacia.ytmp3.service.MP3MetadataManager;
@@ -32,7 +30,7 @@ public class MP3MetadataManagerImpl implements MP3MetadataManager {
      * Updates the MP3 metadata with the information we have of the song.
      * @param song Song to update.
      */
-    public void updateMP3Metadata(final Song song) {
+    public void updateID3V1MP3Metadata(final Song song) {
         try {
             if (StringUtils.isEmpty(song.getFilePath())) {
                 final String message = "We couldn't update MP3 " + song.getTitle() + " metadata because there is no path indicated for the song.";
@@ -57,6 +55,49 @@ public class MP3MetadataManagerImpl implements MP3MetadataManager {
                 }
                 if (!StringUtils.isEmpty(song.getYear())) {
                     id3v1Tag.setYear(song.getYear());
+                }
+                final String auxFilePath = song.getFilePath() + "mp3agic";
+                mp3file.save(auxFilePath);
+                new File(song.getFilePath()).delete();
+                Path source = Paths.get(auxFilePath);
+                Files.move(source, source.resolveSibling(song.getArtist() + " - " + song.getTitle() + ".mp3"));
+            }
+        } catch (Exception ex) {
+            final String message = "Error updating " + song.getTitle() + ". " + ex.getMessage();
+            logger.error(message);
+            resultManager.addMessage(message);
+        }
+    }
+
+    /**
+     * Updates the MP3 metadata with the information we have of the song.
+     * @param song Song to update.
+     */
+    public void updateMP3Metadata(final Song song) {
+        try {
+            if (StringUtils.isEmpty(song.getFilePath())) {
+                final String message = "We couldn't update MP3 " + song.getTitle() + " metadata because there is no path indicated for the song.";
+                logger.warn(message);
+                resultManager.addMessage(message);
+            } else {
+                final Mp3File mp3file = new Mp3File(song.getFilePath());
+                ID3v2 id3v2Tag;
+                if (mp3file.hasId3v1Tag()) {
+                    id3v2Tag =  mp3file.getId3v2Tag();
+                } else {
+                    // mp3 does not have an ID3v1 tag, let's create one..
+                    id3v2Tag = new ID3v24Tag();
+                    mp3file.setId3v1Tag(id3v2Tag);
+                }
+                id3v2Tag.setTitle(song.getTitle());
+                if (!StringUtils.isEmpty(song.getArtist())) {
+                    id3v2Tag.setArtist(song.getArtist());
+                }
+                if (!StringUtils.isEmpty(song.getAlbum())) {
+                    id3v2Tag.setAlbum(song.getAlbum());
+                }
+                if (!StringUtils.isEmpty(song.getYear())) {
+                    id3v2Tag.setYear(song.getYear());
                 }
                 final String auxFilePath = song.getFilePath() + "mp3agic";
                 mp3file.save(auxFilePath);
