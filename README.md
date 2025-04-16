@@ -1,5 +1,6 @@
 # youtubeToMP3
 Get a bunch of Youtube vídeos as MP3.
+The project works with Java 18.
 
 We need to create an Excel file where we are indicating all the Youtube videos to download as MP3.
 
@@ -11,7 +12,6 @@ You need to install yt-dlp and ffmpeg in your system (you can use pip install yt
 An executable version of ffmpeg for MacOs is included in the utils folder.
 
 We also use mp3agic library. Documentation can be found in https://github.com/mpatric/mp3agic.
-
 
 
 # MacOs installation tips
