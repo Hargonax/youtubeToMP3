@@ -20,3 +20,13 @@ it may be easiest to use 'pipx install xyz', which will manage a
 virtual environment for you. You can install pipx with
     
 brew install pipx
+
+# Windows installation tips
+To use yt-dlp, we need to download the file yt-dlp.exe from this page:
+https://github.com/yt-dlp/yt-dlp
+and add it to ./utils/windows in the project.
+
+To install FFMPEG, I followed the instructions of this page:
+https://www.gyan.dev/ffmpeg/builds/
+and executed in Powershell the following command:
+winget install "FFmpeg (Shared)"
