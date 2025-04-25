@@ -57,7 +57,7 @@ public class MainServiceImpl implements MainService {
                         resultManager.addMessage(message);
                     }
                 }
-                metadataManager.updateMP3Metadata(s);
+                metadataManager.updateID3V1MP3Metadata(s);
             });
         } finally {
             resultManager.createExecutionResultFile();
