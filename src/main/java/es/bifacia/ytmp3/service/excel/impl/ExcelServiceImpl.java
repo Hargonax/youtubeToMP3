@@ -38,8 +38,7 @@ public class ExcelServiceImpl implements ExcelService {
     @Value("${mp3.output.folder}")
     private String outputFolder;
 
-    @Value("" +
-            "")
+    @Value("${songs.file}")
     private String songsFilePath;
 
     @Autowired
