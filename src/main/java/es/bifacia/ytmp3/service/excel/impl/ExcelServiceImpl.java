@@ -56,13 +56,20 @@ public class ExcelServiceImpl implements ExcelService {
     public List<Song> getSongs() throws Exception {
         final List<Song> songs = new ArrayList<>();
         final XSSFSheet sheet = getFirstSheet(songsFilePath);
+        int counter = 0;
         for (final Row row : sheet) {
+            counter++;
             if (row.getRowNum() != 0) {
-                if (StringUtils.isEmpty(row.getCell(TITLE_COLUMN).getStringCellValue())) {
-                    break;
+                try {
+                    final String title = getStringCellValue(row, TITLE_COLUMN);
+                    if (StringUtils.isEmpty(title)) {
+                        break;
+                    }
+                    final Song song = parseSongRow(row);
+                    songs.add(song);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-                final Song song = parseSongRow(row);
-                songs.add(song);
             }
         }
         return songs;
