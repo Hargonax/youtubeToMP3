@@ -58,7 +58,7 @@ public class ExcelServiceImpl implements ExcelService {
         final XSSFSheet sheet = getFirstSheet(songsFilePath);
         for (final Row row : sheet) {
             if (row.getRowNum() != 0) {
-                if (StringUtils.isEmpty(row.getCell(TITLE_COLUMN).getStringCellValue())) {
+                if (StringUtils.isEmpty(getStringCellValue(row, TITLE_COLUMN))) {
                     break;
                 }
                 final Song song = parseSongRow(row);
