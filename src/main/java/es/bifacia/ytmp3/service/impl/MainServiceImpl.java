@@ -14,6 +14,9 @@ import java.util.List;
 public class MainServiceImpl implements MainService {
 
     @Autowired
+    private CSVParser csvParser;
+
+    @Autowired
     private MP3Manager mp3Manager;
 
     @Autowired
@@ -40,11 +43,13 @@ public class MainServiceImpl implements MainService {
      */
     public void runApplication() throws Exception {
         try {
-            final List<Song> songs = excelService.getSongs();
+            final List<Song> songs = csvParser.getSongs();
+//            final List<Song> songs = excelService.getSongs();
             if (songs == null || songs.isEmpty()) {
                 final String message = "No songs were retrieved from the Excel page.";
                 resultManager.addMessage(message);
             }
+            assert songs != null;
             songs.forEach(s -> {
                 if (!FileUtils.fileExists(s.getFilePath())) {
                     if (!StringUtils.isEmpty(s.getYoutubeURL())) {
@@ -56,8 +61,13 @@ public class MainServiceImpl implements MainService {
                         final String message = "No Youtube URL for song " + s.getTitle() + ".";
                         resultManager.addMessage(message);
                     }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        
+                    }
                 }
-                metadataManager.updateID3V1MP3Metadata(s);
+//                metadataManager.updateID3V1MP3Metadata(s);
             });
         } finally {
             resultManager.createExecutionResultFile();

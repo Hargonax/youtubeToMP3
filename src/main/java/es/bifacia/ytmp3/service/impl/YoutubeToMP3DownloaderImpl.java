@@ -27,9 +27,12 @@ public class YoutubeToMP3DownloaderImpl implements YoutubeToMP3Downloader {
      * @param outputFile Path where we are downloading the MP3 transformed file.
      */
     public void downloadYoutubeVideoAsMP3(final String youtubeURL, final String outputFile) {
+        // yt-dlp.exe -x --add-metadata --audio-format mp3 -o "009 Sound System - Dreamscape.mp3" https://www.youtube.com/watch?v=TKfS5zVfGBc
         final ProcessBuilder processBuilder = new ProcessBuilder(
                 ytDlpPath,
                 "-x",                         // extracts audio
+                "--add-metadata",
+//                " --audio-quality", "0",
                 "--audio-format", "mp3",      // converts it to mp3
                 "-o", outputFile,            // name of the file
                 youtubeURL
